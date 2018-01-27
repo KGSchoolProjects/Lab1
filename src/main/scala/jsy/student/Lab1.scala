@@ -128,17 +128,43 @@ object Lab1 extends jsy.util.JsyApplication with jsy.lab1.Lab1Like {
       case Node(Empty, d, r) => (r, d)
       case Node(l, d, r) =>
         val (l1, m) = deleteMin(l)
-        ???
+        (Node(l1, d, r), m)
     }
   }
 
-  def delete(t: SearchTree, n: Int): SearchTree = ???
+  def delete(t: SearchTree, n: Int): SearchTree = {
+    t match {
+      case Empty => t
+      case Node(l, d, r) =>
+        if (n < d)
+          return Node(delete(l, n), d, r)
+        if (n > d)
+          Node(l, d, delete(r, n))
+        else
+          r match {
+            case Empty => l
+            case _ =>
+              val (r1, m) = deleteMin(r)
+              Node(l, m, r1)
+          }
+    }
+  }
 
   /* JavaScripty */
 
   def eval(e: Expr): Double = e match {
-    case N(n) => ???
-    case _ => ???
+    case N(n) => n
+    case Unary(uop, e1) =>
+      uop match{
+        case Neg => -eval(e1)
+      }
+    case Binary(bop, e1, e2) =>
+      bop match{
+        case Plus => eval(e1) + eval(e2)
+        case Minus => eval(e1) - eval(e2)
+        case Times => eval(e1) * eval(e2)
+        case Div => eval(e1) / eval(e2)
+      }
   }
 
  // Interface to run your interpreter from a string.  This is convenient
