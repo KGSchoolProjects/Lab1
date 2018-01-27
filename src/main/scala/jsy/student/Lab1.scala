@@ -81,7 +81,11 @@ object Lab1 extends jsy.util.JsyApplication with jsy.lab1.Lab1Like {
     }
   }
 
-  def sqrtErr(c: Double, x0: Double, epsilon: Double): Double = ???
+  def sqrtErr(c: Double, x0: Double, epsilon: Double): Double = {
+    require(epsilon > 0.0)
+    if (abs((x0*x0) - c) < epsilon) x0
+    else sqrtErr(c, sqrtStep(c, x0), epsilon)
+  }
 
   def sqrt(c: Double): Double = {
     require(c >= 0)
@@ -99,12 +103,24 @@ object Lab1 extends jsy.util.JsyApplication with jsy.lab1.Lab1Like {
   def repOk(t: SearchTree): Boolean = {
     def check(t: SearchTree, min: Int, max: Int): Boolean = t match {
       case Empty => true
-      case Node(l, d, r) => ???
+      case Node(l, d, r) =>
+        if (min > d | max < d) return false
+        if (check(l, min, d) & check(r, d, max)) true
+        else false
     }
     check(t, Int.MinValue, Int.MaxValue)
   }
 
-  def insert(t: SearchTree, n: Int): SearchTree = ???
+  def insert(t: SearchTree, n: Int): SearchTree = {
+    t match {
+      case Empty => Node(Empty, n, Empty)
+      case Node(l, d, r) =>
+        if (n >= d)
+          Node(l,d,insert(r, n))
+        else
+          Node(insert(l, n),d,r)
+    }
+  }
 
   def deleteMin(t: SearchTree): (SearchTree, Int) = {
     require(t != Empty)
